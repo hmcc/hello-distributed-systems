@@ -22,7 +22,7 @@ public class App extends SpringBootServletInitializer {
     public static final String HOSTNAME = "localhost";
     public static final String PORT_PROPERTY = "server.port";
     public static final int PORT_RANGE = 10;
-    public static final String SERVICE_TYPE = "_hello-distributed-systems._http._tcp.local.";
+    public static final String SERVICE_TYPE = "_hello-distributed-systems._tcp.local.";
     public static final long SPIN_SPEED = 0;
 
     private static Logger logger = LoggerFactory.getLogger(App.class);
