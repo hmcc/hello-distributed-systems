@@ -76,6 +76,10 @@ public final class JmDNSWrapper {
         return jmdns;
     }
 
+    public Listener getListener() {
+	return listener;
+    }
+
     public void shutdown() {
 	logger.debug("Shutting down jmDNS");
 	if (jmdns != null) {
@@ -86,6 +90,7 @@ public final class JmDNSWrapper {
 	    } catch (IOException e) {
 		logger.info("Error closing JmDNS: " + e);
 	    }
+	    instance = null;
 	}
     }
 }
