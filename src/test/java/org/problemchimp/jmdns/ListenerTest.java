@@ -139,7 +139,9 @@ public class ListenerTest {
     }
 
     @AfterClass
-    public static void tearDownClass() {
+    public static void tearDownClass() throws IOException {
 	System.clearProperty(App.PORT_PROPERTY);
+	jmdns.unregisterAllServices();
+	jmdns.close();
     }
 }

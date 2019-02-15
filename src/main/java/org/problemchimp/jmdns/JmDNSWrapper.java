@@ -27,7 +27,7 @@ public final class JmDNSWrapper {
 	if (jmdns == null) {
 	    jmdns = JmDNS.create(thisAddress);
 	    jmdns.registerService(thisService);
-	    logger.info("Registered service " + ServiceRegistry.stringify(thisService));
+	    logger.info("Registered service " + ServiceInfoUtil.stringify(thisService));
 	    jmdns.addServiceListener(thisService.getType(), listener);
 	}
     }

@@ -1,6 +1,6 @@
 package org.problemchimp.handler;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.problemchimp.http.Endpoint;
+import org.problemchimp.jmdns.ServiceInfoUtil;
 import org.problemchimp.jmdns.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,8 @@ public final class OutgoingSendAllHandler extends OutgoingHandlerBase {
 
     private @Autowired ServiceRegistry registry;
 
-    private boolean sendToAddress(String host, int port, Object message) {
+    private boolean sendToAddress(URL url, Object message) {
 	try {
-	    URL url = new URL("http", host, port, Endpoint.LOCAL_PATH);
 	    logger.debug("Attempting to send " + message + " to " + url);
 	    Response response = ClientBuilder.newClient()
 		    .target(url.toURI())
@@ -42,7 +42,7 @@ public final class OutgoingSendAllHandler extends OutgoingHandlerBase {
 		logger.warn(response.toString());
 	    }
 	    
-	} catch (IOException | URISyntaxException e) {
+	} catch (URISyntaxException e) {
 	    logger.warn(e.toString());
 	}
 	return false;
@@ -54,7 +54,11 @@ public final class OutgoingSendAllHandler extends OutgoingHandlerBase {
 	    ServiceInfo info = it.next();
 	    boolean sent = false;
 	    for (int i = 0; i < info.getHostAddresses().length && !sent; i++) {
-		sent = sendToAddress(info.getHostAddresses()[i], info.getPort(), message);
+		try {
+		    sent = sendToAddress(ServiceInfoUtil.getURL(info, i, Endpoint.LOCAL_PATH), message);
+		} catch (MalformedURLException e) {
+		    logger.warn(e.toString());
+		}
 	    }
 	}
     }
