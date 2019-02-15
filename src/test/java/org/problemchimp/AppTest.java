@@ -43,6 +43,33 @@ public class AppTest {
     }
 
     @Test
+    public void testGetPorts_bothSmall() {
+	String[] args = { "--minPort=" + Integer.toString(0), "--maxPort=" + Integer.toString(0) };
+	ApplicationArguments appArgs = new DefaultApplicationArguments(args);
+	int ports[] = App.getPorts(appArgs);
+	assertEquals(App.DEFAULT_PORT, ports[0]);
+	assertEquals(App.DEFAULT_PORT + App.PORT_RANGE, ports[1]);
+    }
+
+    @Test
+    public void testGetPorts_bothBig() {
+	String[] args = { "--minPort=" + Integer.toString(0x10000), "--maxPort=" + Integer.toString(0x10000) };
+	ApplicationArguments appArgs = new DefaultApplicationArguments(args);
+	int ports[] = App.getPorts(appArgs);
+	assertEquals(App.DEFAULT_PORT, ports[0]);
+	assertEquals(App.DEFAULT_PORT + App.PORT_RANGE, ports[1]);
+    }
+
+    @Test
+    public void testGetPorts_oneBigOneSmall() {
+	String[] args = { "--minPort=" + Integer.toString(0), "--maxPort=" + Integer.toString(0x10000) };
+	ApplicationArguments appArgs = new DefaultApplicationArguments(args);
+	int ports[] = App.getPorts(appArgs);
+	assertEquals(App.DEFAULT_PORT, ports[0]);
+	assertEquals(App.DEFAULT_PORT + App.PORT_RANGE, ports[1]);
+    }
+
+    @Test
     public void testGetPorts_minPortValid() {
 	int minPort = 1234;
 	String[] args = { "--minPort=" + Integer.toString(minPort) };
@@ -50,6 +77,23 @@ public class AppTest {
 	int ports[] = App.getPorts(appArgs);
 	assertEquals(minPort, ports[0]);
 	assertEquals(minPort + App.PORT_RANGE, ports[1]);
+    }
+
+    @Test
+    public void testGetPorts_minPortValidButBig() {
+	for (int minPort = 0xffff; minPort >= 0xffff - 10; minPort--) {
+	    String[] args = { "--minPort=" + Integer.toString(minPort) };
+	    ApplicationArguments appArgs = new DefaultApplicationArguments(args);
+	    int ports[] = App.getPorts(appArgs);
+	    assertEquals(minPort, ports[0]);
+	    assertEquals(0xffff, ports[1]);
+	}
+	int minPort = 0xffff - 11;
+	String[] args = { "--minPort=" + Integer.toString(minPort) };
+	ApplicationArguments appArgs = new DefaultApplicationArguments(args);
+	int ports[] = App.getPorts(appArgs);
+	assertEquals(minPort, ports[0]);
+	assertEquals(0xffff - 1, ports[1]);
     }
 
     @Test

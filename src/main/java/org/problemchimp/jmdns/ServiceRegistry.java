@@ -12,19 +12,19 @@ import javax.jmdns.ServiceInfo;
  */
 public final class ServiceRegistry {
 
-    private static ServiceRegistry instance;
-
     private Set<ServiceInfo> services = ConcurrentHashMap.newKeySet();
-
-    public static ServiceRegistry getInstance() {
-	if (instance == null) {
-	    instance = new ServiceRegistry();
-	}
-	return instance;
-    }
 
     public boolean add(ServiceInfo service) {
 	return services.add(service);
+    }
+
+    public ServiceInfo lookup(String serviceName) {
+	for (ServiceInfo info : services) {
+	    if (info != null && info.getName().equals(serviceName)) {
+		return info;
+	    }
+	}
+	return null;
     }
 
     public Iterator<ServiceInfo> iterator() {
@@ -34,7 +34,7 @@ public final class ServiceRegistry {
     public boolean remove(ServiceInfo service) {
 	return services.remove(service);
     }
-    
+
     public void clear() {
 	services.clear();
     }

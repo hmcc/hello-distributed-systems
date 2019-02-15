@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
  * Jersey config for the HTTP endpoint.
  */
 @Component
-public class Config extends ResourceConfig {
+public class HttpConfig extends ResourceConfig {
 
-    public Config() {
+    public HttpConfig() {
 	registerEndpoints();
     }
     

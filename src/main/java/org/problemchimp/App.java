@@ -7,11 +7,14 @@ import javax.annotation.PreDestroy;
 import org.problemchimp.jmdns.JmDNSWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.event.EventListener;
 import org.springframework.util.SocketUtils;
 
 /**
@@ -29,15 +32,13 @@ public class App extends SpringBootServletInitializer {
 
     private static Logger logger = LoggerFactory.getLogger(App.class);
 
-    private JmDNSWrapper jmdns;
-    private String serviceName;
+    private @Autowired JmDNSWrapper jmdns;
 
-    public App(ApplicationArguments appArgs) {
-	serviceName = getServiceName(appArgs);
-	jmdns = null;
+    @EventListener(ApplicationReadyEvent.class)
+    public void init() {
+	logger.debug("Initialising jmDNS");
 	try {
-	    jmdns = JmDNSWrapper.getInstance(HOSTNAME, SERVICE_TYPE, serviceName,
-		    Integer.parseInt(System.getProperty(PORT_PROPERTY)));
+	    jmdns.init();
 
 	} catch (Exception e) {
 	    logger.error(e.toString(), e);
@@ -58,7 +59,7 @@ public class App extends SpringBootServletInitializer {
 	return port;
     }
 
-    private static String getOrDefault(ApplicationArguments args, String optionName, String defaultVal) {
+    public static String getOrDefault(ApplicationArguments args, String optionName, String defaultVal) {
 	if (args.getOptionNames().contains(optionName)) {
 	    return args.getOptionValues(optionName).iterator().next();
 	} else {
@@ -79,16 +80,20 @@ public class App extends SpringBootServletInitializer {
 	int maxPort = getOrDefault(appArgs, "maxPort", -1);
 
 	// both ports invalid
-	if (minPort < 1 && maxPort < 1 || (maxPort > 1 && minPort > maxPort)) {
+	if ((minPort < 1 || minPort > 0xffff) && (maxPort < 1 || maxPort > 0xffff)
+		|| (maxPort > 1 && minPort > maxPort)) {
 	    minPort = App.DEFAULT_PORT;
 	    maxPort = minPort + App.PORT_RANGE;
 
-	// min is valid
-	} else if (minPort >= 1 && maxPort < 1) {
+	    // min is valid
+	} else if (minPort >= 1 && minPort <= 0xffff && maxPort < 1) {
 	    maxPort = minPort + App.PORT_RANGE;
+	    if (maxPort > 0xFFFF) {
+		maxPort = 0xFFFF;
+	    }
 
-	// max is valid
-	} else if (maxPort >= 1 && minPort < 1) {
+	    // max is valid
+	} else if (maxPort >= 1 && maxPort <= 0xffff && minPort < 1) {
 	    minPort = maxPort - App.PORT_RANGE;
 	    if (minPort < 1) {
 		minPort = 1;

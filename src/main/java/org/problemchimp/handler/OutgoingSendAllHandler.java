@@ -15,6 +15,7 @@ import org.problemchimp.http.Endpoint;
 import org.problemchimp.jmdns.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Default implementation of {@link OutgoingHandler} that echoes messages to all
@@ -24,7 +25,7 @@ public final class OutgoingSendAllHandler extends OutgoingHandlerBase {
 
     private static final Logger logger = LoggerFactory.getLogger(OutgoingSendAllHandler.class);
 
-    private ServiceRegistry registry = ServiceRegistry.getInstance();
+    private @Autowired ServiceRegistry registry;
 
     private boolean sendToAddress(String host, int port, Object message) {
 	try {

@@ -6,6 +6,7 @@ import javax.jmdns.ServiceListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * jmDNS service listener for the application which maintains a registry of
@@ -15,13 +16,9 @@ public final class Listener implements ServiceListener {
 
     private static Logger logger = LoggerFactory.getLogger(Listener.class);
 
-    private ServiceRegistry registry = ServiceRegistry.getInstance();
-    private ServiceInfo serviceInfo;
+    private @Autowired ServiceRegistry registry;
+    private @Autowired ServiceInfo serviceInfo;
 
-    public Listener(ServiceInfo serviceInfo) {
-	this.serviceInfo = serviceInfo;
-    }
-    
     protected ServiceInfo getServiceInfo() {
 	return serviceInfo;
     }
