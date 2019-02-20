@@ -31,7 +31,6 @@ public class Endpoint {
     @Autowired IncomingHandler incoming;
     @Autowired OutgoingHandler outgoing;
     @Autowired ServiceRegistry registry;
-    @Autowired ServiceInfo thisService;
 
     @GET
     @Path("/")
@@ -44,16 +43,11 @@ public class Endpoint {
     @Path("/service/{service}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getService(@PathParam("service") String serviceName) throws MalformedURLException {
-	ServiceInfo found = null;
-	if (thisService.getName().equals(serviceName)) {
-	    found = thisService;
-	} else {
-	    found = registry.find(serviceName);
-	}
-	if (found == null) {
+	ServiceInfo info = registry.find(serviceName);
+	if (info == null) {
 	    return Response.noContent().build();
 	} else {
-	    return Response.ok().entity(ServiceInfoUtil.asMap(found)).build();
+	    return Response.ok().entity(ServiceInfoUtil.asMap(info)).build();
 	}
     }
 

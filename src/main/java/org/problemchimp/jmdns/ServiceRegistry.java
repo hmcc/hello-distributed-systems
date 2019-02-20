@@ -6,12 +6,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jmdns.ServiceInfo;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Registry of currently available services.
  */
 public final class ServiceRegistry {
 
     private Set<ServiceInfo> services = ConcurrentHashMap.newKeySet();
+    @Autowired ServiceInfo thisService;
 
     public boolean add(ServiceInfo service) {
 	return services.add(service);
@@ -22,6 +25,9 @@ public final class ServiceRegistry {
     }
     
     public ServiceInfo find(String serviceName) {
+	if (thisService.getName().equals(serviceName)) {
+	    return thisService;
+	}
 	for (ServiceInfo info : services) {
 	    if (info != null && info.getName().equals(serviceName)) {
 		return info;
