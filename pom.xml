@@ -5,7 +5,7 @@
 
   <groupId>org.problemchimp</groupId>
   <artifactId>hello-distributed-systems</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
   <name>hello-distributed-systems</name>
   
   <parent>
