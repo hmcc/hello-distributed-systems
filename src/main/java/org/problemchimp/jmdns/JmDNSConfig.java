@@ -31,7 +31,7 @@ public class JmDNSConfig {
     
     @Bean
     public ServiceInfo thisService(ApplicationArguments appArgs) {
-	String serviceName = AppStarter.getOrDefault(appArgs, "serviceName", UUID.randomUUID().toString());
+	String serviceName = AppStarter.getOrDefault(appArgs, "service", UUID.randomUUID().toString());
 	int port;
 	try {
 	    port = Integer.parseInt(System.getProperty(App.PORT_PROPERTY));

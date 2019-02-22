@@ -5,8 +5,8 @@ endif
 ifdef max_port
 	runcmd := "$(runcmd),--maxPort=$(max_port)"
 endif
-ifdef service_name
-	runcmd := "$(runcmd),--serviceName=$(service_name)"
+ifdef service
+	runcmd := "$(runcmd),--service=$(service)"
 endif
 
 clean:

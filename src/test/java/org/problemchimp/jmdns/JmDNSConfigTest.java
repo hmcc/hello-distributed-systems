@@ -37,7 +37,7 @@ public class JmDNSConfigTest {
     @Test
     public void testGetServiceName_valid() {
 	String serviceName = "Alice";
-	String[] args = { "--serviceName=" + serviceName };
+	String[] args = { "--service=" + serviceName };
 	ApplicationArguments appArgs = new DefaultApplicationArguments(args);
 	ServiceInfo info = new JmDNSConfig().thisService(appArgs);
 	assertEquals(serviceName, info.getName());
