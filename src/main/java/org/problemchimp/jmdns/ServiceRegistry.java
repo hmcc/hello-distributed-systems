@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public final class ServiceRegistry {
 
     private Set<ServiceInfo> services = ConcurrentHashMap.newKeySet();
-    @Autowired ServiceInfo thisService;
+    @Autowired private ServiceInfo thisService;
 
     public boolean add(ServiceInfo service) {
 	return services.add(service);
@@ -23,7 +23,11 @@ public final class ServiceRegistry {
     public void clear() {
 	services.clear();
     }
-    
+
+    public ServiceInfo getThisService() {
+	return thisService;
+    }
+
     public ServiceInfo find(String serviceName) {
 	if (thisService.getName().equals(serviceName)) {
 	    return thisService;
@@ -35,11 +39,11 @@ public final class ServiceRegistry {
 	}
 	return null;
     }
-    
+
     public Iterator<ServiceInfo> iterator() {
 	return services.iterator();
     }
-    
+
     public boolean remove(ServiceInfo service) {
 	return services.remove(service);
     }

@@ -4,14 +4,21 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.jmdns.ServiceInfo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility functions for working with {@link ServiceInfo}.
  */
 public final class ServiceInfoUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServiceInfoUtil.class);
 
     private ServiceInfoUtil() {
 
@@ -20,9 +27,10 @@ public final class ServiceInfoUtil {
     /**
      * Passing a {@link ServiceInfo} to an ObjectMapper directly doesn't work
      * because some getXXX methods can throw exceptions; use this instead.
+     *
      * @param info
      * @return
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     public static Map<String, Object> asMap(ServiceInfo info) throws MalformedURLException {
 	Map<String, Object> fields = new HashMap<>();
@@ -47,11 +55,35 @@ public final class ServiceInfoUtil {
 	return sb.toString();
     }
 
-    public static URL getURL(ServiceInfo info, int index, String path) throws MalformedURLException {
-	return new URL("http", info.getInetAddresses()[index].getHostName(), info.getPort(), path);
+    public static Iterator<URL> getURLs(ServiceInfo info, String path) {
+	return new Iterator<URL>() {
+	    private int currentIndex = 0;
+
+	    @Override
+	    public boolean hasNext() {
+		return currentIndex < info.getInetAddresses().length;
+	    }
+
+	    @Override
+	    public URL next() {
+		if (!(hasNext())) {
+		    throw new NoSuchElementException();
+		}
+		try {
+		    return new URL("http", info.getInetAddresses()[currentIndex++].getHostName(), info.getPort(), path);
+		} catch (MalformedURLException e) {
+		    logger.warn(e.toString());
+		    return next();
+		}
+	    }
+	};
+    }
+
+    public static Iterator<URL> getURLs(ServiceInfo info) {
+	return getURLs(info, "/");
     }
 
     public static URL getURL(ServiceInfo info) throws MalformedURLException {
-	return getURL(info, 0, "/");
+	return getURLs(info).next();
     }
 }

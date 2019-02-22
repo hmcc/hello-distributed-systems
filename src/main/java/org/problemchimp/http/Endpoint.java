@@ -17,19 +17,17 @@ import org.problemchimp.handler.OutgoingHandler;
 import org.problemchimp.jmdns.ServiceInfoUtil;
 import org.problemchimp.jmdns.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * HTTP endpoint for the application.
  */
-@Service
 @Path("/")
-public class Endpoint {
+public abstract class Endpoint<T> {
 
     public static String LOCAL_PATH = "/local";
 
-    @Autowired IncomingHandler incoming;
-    @Autowired OutgoingHandler outgoing;
+    @Autowired IncomingHandler<T> incoming;
+    @Autowired OutgoingHandler<T> outgoing;
     @Autowired ServiceRegistry registry;
 
     @GET
@@ -54,14 +52,14 @@ public class Endpoint {
     @PUT
     @Path("/local")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void receive(Object message) {
+    public void receive(T message) {
 	incoming.add(message);
     }
 
     @PUT
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void send(Object message) {
+    public void send(T message) {
 	outgoing.add(message);
     }
 }

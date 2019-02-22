@@ -20,7 +20,7 @@ public class AppStarter {
 
     private ApplicationArguments args;
 
-    protected AppStarter(String[] args) {
+    public AppStarter(String[] args) {
 	// Parse the args manually.
 	// We can't get at the parsed args from Spring until after the class is
 	// constructed, and by that time it's too late to set the port.
@@ -76,7 +76,7 @@ public class AppStarter {
 	return new int[] { minPort, maxPort };
     }
     
-    protected void start() {
+    public void start() {
 	int[] ports = getPorts();
 
 	// Find a port within range that's available and set the server.port
