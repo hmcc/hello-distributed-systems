@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Default implementation of {@link IncomingHandler} that echoes messages to
  * stdout.
  */
-public final class IncomingEchoHandler extends IncomingHandlerBase {
+public final class IncomingEchoHandler extends IncomingHandlerBase<Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(IncomingEchoHandler.class);
 

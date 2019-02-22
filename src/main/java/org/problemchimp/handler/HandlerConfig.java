@@ -21,24 +21,24 @@ public class HandlerConfig {
     private static final Logger logger = LoggerFactory.getLogger(HandlerConfig.class);
 
     @Bean
-    @ConditionalOnProperty(name = "org.problemchimp.handler.incoming", havingValue = "default", matchIfMissing = true)
-    public IncomingHandler defaultIncomingHandler() {
-	IncomingHandler toReturn = new IncomingEchoHandler();
-	logger.debug("org.problemchimp.handler.incoming not set, defaulting to " + toReturn.getClass());
+    @ConditionalOnProperty(name = "org.problemchimp.handler", havingValue = "default", matchIfMissing = true)
+    public IncomingHandler<?> defaultIncomingHandler() {
+	IncomingHandler<?> toReturn = new IncomingEchoHandler();
+	logger.debug("org.problemchimp.handler not set, defaulting to " + toReturn.getClass());
 	return toReturn;
     }
 
     @Bean
-    @ConditionalOnProperty(name = "org.problemchimp.handler.outgoing", havingValue = "default", matchIfMissing = true)
-    public OutgoingHandler defaultOutgoingHandler() {
-	OutgoingHandler toReturn = new OutgoingSendAllHandler();
-	logger.debug("org.problemchimp.handler.outgoing not set, defaulting to " + toReturn.getClass());
+    @ConditionalOnProperty(name = "org.problemchimp.handler", havingValue = "default", matchIfMissing = true)
+    public OutgoingHandler<?> defaultOutgoingHandler() {
+	OutgoingHandler<?> toReturn = new OutgoingSendAllHandler();
+	logger.debug("org.problemchimp.handler not set, defaulting to " + toReturn.getClass());
 	return toReturn;
     }
 
     @Bean
-    public CommandLineRunner schedulingRunner(TaskExecutor executor, IncomingHandler incoming,
-	    OutgoingHandler outgoing) {
+    public CommandLineRunner schedulingRunner(TaskExecutor executor, IncomingHandler<?> incoming,
+	    OutgoingHandler<?> outgoing) {
 	return new CommandLineRunner() {
 	    public void run(String... args) throws Exception {
 		executor.execute(incoming);

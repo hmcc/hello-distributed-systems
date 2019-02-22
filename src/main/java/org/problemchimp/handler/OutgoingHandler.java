@@ -8,7 +8,7 @@ package org.problemchimp.handler;
  * Implementations of the interface should override the run() method to process
  * the queued messages.
  */
-public interface OutgoingHandler extends Runnable {
+public interface OutgoingHandler<T> extends Runnable {
 
-    public void add(Object object);
+    public void add(T object);
 }

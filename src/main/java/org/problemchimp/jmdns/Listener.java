@@ -6,6 +6,7 @@ import javax.jmdns.ServiceListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * jmDNS service listener for the application which maintains a registry of
@@ -15,13 +16,9 @@ public final class Listener implements ServiceListener {
 
     private static Logger logger = LoggerFactory.getLogger(Listener.class);
 
-    private ServiceRegistry registry = ServiceRegistry.getInstance();
-    private ServiceInfo serviceInfo;
+    private @Autowired ServiceRegistry registry;
+    private @Autowired ServiceInfo serviceInfo;
 
-    public Listener(ServiceInfo serviceInfo) {
-	this.serviceInfo = serviceInfo;
-    }
-    
     protected ServiceInfo getServiceInfo() {
 	return serviceInfo;
     }
@@ -29,17 +26,17 @@ public final class Listener implements ServiceListener {
     @Override
     public void serviceAdded(ServiceEvent event) {
 	ServiceInfo info = event.getInfo();
-	logger.trace("Service added: " + ServiceRegistry.stringify(info));
+	logger.trace("Service added: " + ServiceInfoUtil.stringify(info));
     }
 
     @Override
     public void serviceRemoved(ServiceEvent event) {
 	ServiceInfo info = event.getInfo();
-	logger.trace("Service removed: " + ServiceRegistry.stringify(info));
+	logger.trace("Service removed: " + ServiceInfoUtil.stringify(info));
 	if (info.equals(serviceInfo)) {
 	    logger.debug("Service is this service: " + info.getName());
 	} else {
-	    logger.info("Removing service: " + ServiceRegistry.stringify(info));
+	    logger.info("Removing service: " + ServiceInfoUtil.stringify(info));
 	    registry.remove(info);
 	}
     }
@@ -47,11 +44,11 @@ public final class Listener implements ServiceListener {
     @Override
     public void serviceResolved(ServiceEvent event) {
 	ServiceInfo info = event.getInfo();
-	logger.trace("Service resolved: " + ServiceRegistry.stringify(info));
+	logger.trace("Service resolved: " + ServiceInfoUtil.stringify(info));
 	if (info.equals(serviceInfo)) {
 	    logger.debug("Service is this service: " + info.getName());
 	} else {
-	    logger.info("Found new service: " + ServiceRegistry.stringify(info));
+	    logger.info("Found new service: " + ServiceInfoUtil.stringify(info));
 	    registry.add(info);
 	}
     }

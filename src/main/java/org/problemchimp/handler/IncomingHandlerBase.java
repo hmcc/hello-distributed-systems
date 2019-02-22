@@ -11,19 +11,19 @@ import org.slf4j.LoggerFactory;
  * Base implementation of {@link IncomingHandler} which polls the queue and
  * provides an overridable {@code handleMessage} method.
  */
-public abstract class IncomingHandlerBase implements IncomingHandler {
+public abstract class IncomingHandlerBase<T> implements IncomingHandler<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(IncomingHandlerBase.class);
 
-    private Queue<Object> incoming = new ConcurrentLinkedQueue<>();
+    private Queue<T> incoming = new ConcurrentLinkedQueue<>();
     
-    protected abstract void handleMessage(Object message);
+    protected abstract void handleMessage(T message);
 
     /**
      * Read from the queue.
      */
     protected void readAll() {
-	Object message;
+	T message;
 	while ((message = incoming.poll()) != null) {
 	    logger.debug("Handling message " + message);
 	    handleMessage(message);
@@ -45,7 +45,7 @@ public abstract class IncomingHandlerBase implements IncomingHandler {
     }
 
     @Override
-    public void add(Object message) {
+    public void add(T message) {
 	incoming.add(message);
     }
 }
