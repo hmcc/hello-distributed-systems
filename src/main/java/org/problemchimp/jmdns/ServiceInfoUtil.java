@@ -32,7 +32,7 @@ public final class ServiceInfoUtil {
      * @return
      * @throws MalformedURLException
      */
-    public static Map<String, Object> asMap(ServiceInfo info) throws MalformedURLException {
+    public static Map<String, Object> asMap(ServiceInfo info) {
 	Map<String, Object> fields = new HashMap<>();
 	fields.put("name", info.getName());
 	fields.put("type", info.getType());
@@ -83,7 +83,7 @@ public final class ServiceInfoUtil {
 	return getURLs(info, "/");
     }
 
-    public static URL getURL(ServiceInfo info) throws MalformedURLException {
+    public static URL getURL(ServiceInfo info) {
 	return getURLs(info).next();
     }
 }
